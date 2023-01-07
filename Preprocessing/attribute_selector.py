@@ -48,12 +48,6 @@ def correlationWithPrice(df):
     # Crea una nuova istanza di SelectKBest utilizzando f_regression come funzione di punteggio
     fs = SelectKBest(score_func=f_regression, k=5)
     # Esegui il fitting di SelectKBest sul dataset trasformato
-    print("fs")
-    print(fs)
-    print("X_train")
-    print(X_train)
-    print("y_train")
-    print(y_train)
     fs.fit(X_train, y_train)
     # Trasforma il dataset di addestramento e il dataset di test utilizzando SelectKBest
     X_train_fs = fs.transform(X_train_transformed)
