@@ -3,86 +3,79 @@ import numpy as np
 import matplotlib as mpl
 from matplotlib import pyplot as plt
 from scipy import stats as st
-
-
-def outlierDetector(df):
-    for att in df.columns[:-1]:
-        z_scores = st.zscore(df.columns[:, att])
-        df["z-score"] = z_scores
-        print(np.max(df["z-score"]))
-        print(np.min(df["z-score"]))
-        df = df[(df["z-score"] > -1) & (df["z-score"] < 1)]
-
-
-def remove_outliers(df):
-    # Calcola gli z-score di ogni punto dei dati
-    z = st.zscore(df)
-    print(z)
-    # Soglia per gli z-score al di fuori della quale rimuovere i dati
-    threshold = 2 # Seleziona solo i dati il cui z-score è inferiore alla soglia
-    df = df[(z < threshold) & (z > -threshold)]
-
-'''
-def vecchiaManiera(df):
-    # Calcoliamo lo z-score di ogni valore del DataFrame
-    selected_columns_df = df[['price', 'year', 'odometer']]
-    z_scores = st.zscore(selected_columns_df)
-
-    # Iteriamo su ogni riga del DataFrame
-    for i, row in df.iterrows():
-        # Se almeno uno z-score della riga è maggiore di 2 o minore di -2, eliminiamo la riga
-        if (z_scores.loc[i] > 3).any() or (z_scores.loc[i] < -3).any():
-            df.drop([i], inplace=True)
-'''
-
-'''
-def vecchiaManiera(df):
-    # Calcoliamo lo z-score di alcuni valore del DataFrame
-    selected_columns_df = df[['price', 'year', 'odometer']]
-    z_scores = st.zscore(selected_columns_df)
-
-    # Iteriamo su ogni riga del DataFrame
-    for i, row in df.iterrows():
-        # elimino riga
-        if (z_scores[i, 1] > 0.5) or (z_scores[i, 1] < -0.5):
-            df = df.drop([i])
-        if (z_scores[i, 2] > 2.5) or (z_scores[i, 2] < -2.5):
-            df = df.drop([i])
-        if (z_scores[i, 4] > 1.5) or (z_scores[i, 2] < -1.5):
-            df = df.drop([i])
-
-    # Restituisce il DataFrame filtrato
-    return df
-'''
-def check_z_scores(df):
-    selected_column = df['price']
-    z_score = st.zscore(selected_column)
-    for i, row in df.iterrows():
-        # elimino riga
-        if (z_score[i] > 0.5) or (z_score[i] < -0.5):
-            df = df.drop([i])
-    selected_column = df['odometer']
-    z_score = st.zscore(selected_column)
-    for i, row in df.iterrows():
-        # elimino riga
-        if (z_score[i] > 1.5) or (z_score[i] < -1.5):
-            df = df.drop([i])
-    selected_column = df['year']
-    z_score = st.zscore(selected_column)
-    for i, row in df.iterrows():
-        # elimino riga
-        if (z_score[i] > 0.5) or (z_score[i] < -0.5):
-            df = df.drop([i])
-    return df
+from sklearn.model_selection import train_test_split
+from sklearn.feature_selection import chi2, SelectKBest
+from sklearn.feature_selection import f_regression
+from sklearn import linear_model
+from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.feature_extraction.text import CountVectorizer
+from scipy.stats import spearmanr, kendalltau
 
 
 def correlationWithPrice(df):
-    corr = np.corrcoef(df)
+    print("Spearman")
+    for i in df.columns:
+        corr, p_value = spearmanr(df['price'], df[i])
+        print(f'{i} {corr}')
 
+    print("Pearson")
+    for i in df.columns:
+        corr = df['price'].corr(df[i])
+        print(f'{i} {corr}')
+
+    print("Kendall")
+    for i in df.columns:
+        corr, p_value = kendalltau(df['price'], df[i])
+        print(f'{i} {corr}')
+
+    # Seleziona le colonne del DataFrame da utilizzare come caratteristiche
+    X = df.loc[:, df.columns.difference(['price', 'Unnamed: 0'])]
+    # Seleziona la colonna del DataFrame da utilizzare come etichetta
+    y = df['price']
+    # Esegui il splitting del dataset in dataset di addestramento e dataset di test
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=100)
+    # Inizializza il vettorizzatore
+    vectorizer = CountVectorizer()
+    # Esegui il fitting del vettorizzatore sul dataset di addestramento
+    vectorizer.fit(X_train)
+    # Trasforma il dataset di addestramento e il dataset di test utilizzando il vettorizzatore
+    X_train_transformed = vectorizer.transform(X_train)
+    X_test_transformed = vectorizer.transform(X_test)
+    # Crea una nuova istanza di SelectKBest utilizzando f_regression come funzione di punteggio
+    fs = SelectKBest(score_func=f_regression, k=5)
+    # Esegui il fitting di SelectKBest sul dataset trasformato
+    fs.fit(X_train, y_train)
+    # Trasforma il dataset di addestramento e il dataset di test utilizzando SelectKBest
+    X_train_fs = fs.transform(X_train_transformed)
+    x_test_fs = fs.transform(X_test_transformed)
+    # Ottieni i nomi delle caratteristiche selezionate
+    feature_names = vectorizer.get_feature_names()
+    # Stampa i nomi delle caratteristiche selezionate insieme ai loro punteggi
+    print("regression test results:")
+    for i in range(len(fs.scores_)):
+        print('Feature %s: %f' % (feature_names[i], fs.scores_[i]))
+
+
+
+def check_z_scores(df):
+    # Normalizziamo il DataFrame con la funzione zscore()
+    df = df.apply(st.zscore)
+
+    # Utilizza la funzione between() per selezionare solo le righe che soddisfano la condizione
+    df = df[(df['price'].between(-0.01, 0.01)) &
+            (df['odometer'].between(-1.8, 1.8)) &
+            (df['year'].between(-2.2, 2.2))]
+
+    # Reimposta gli indici del DataFrame per poterli confrontare con gli indici di df
+    df = df.reset_index()
+    return df
 
 
 df = pd.read_csv('../Dataset/numerical_data.csv')
-df = check_z_scores(df)
+df_z_scores = check_z_scores(df)
+df_filtered = df[df.index.isin(df_z_scores['index'])]
+df = df_filtered
+print(df.info)
 for att in df.columns[:-1]:
     plt.figure()
     print(df[att].max())
@@ -98,8 +91,5 @@ for att in df.columns[:-1]:
     plt.xlabel(att)
     plt.title(f'boxplot of {att} attribute')
     plt.show()
-
-
-
-
+correlationWithPrice(df)
 
