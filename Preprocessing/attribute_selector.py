@@ -76,6 +76,10 @@ def check_z_scores(df):
     return df
 
 
+def correlationWithPrice(df):
+    corr = np.corrcoef(df)
+
+
 
 df = pd.read_csv('../Dataset/numerical_data.csv')
 df = check_z_scores(df)
@@ -94,3 +98,8 @@ for att in df.columns[:-1]:
     plt.xlabel(att)
     plt.title(f'boxplot of {att} attribute')
     plt.show()
+
+
+
+
+
