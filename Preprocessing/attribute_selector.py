@@ -11,7 +11,6 @@ from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.feature_extraction.text import CountVectorizer
 from scipy.stats import spearmanr, kendalltau
 
-
 def correlationWithPrice(df):
     print("Spearman")
     for i in df.columns:
@@ -33,7 +32,7 @@ def correlationWithPrice(df):
     # Seleziona la colonna del DataFrame da utilizzare come etichetta
     y = df['price']
     # Esegui il splitting del dataset in dataset di addestramento e dataset di test
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=100)
+    X_train,X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=100)
     # Inizializza il vettorizzatore
     vectorizer = CountVectorizer()
     # Esegui il fitting del vettorizzatore sul dataset di addestramento
@@ -41,22 +40,31 @@ def correlationWithPrice(df):
     # Trasforma il dataset di addestramento e il dataset di test utilizzando il vettorizzatore
     X_train_transformed = vectorizer.transform(X_train)
     X_test_transformed = vectorizer.transform(X_test)
+    # Genera i nomi delle caratteristiche per il dataset trasformato
+    feature_names = vectorizer.get_feature_names_out()
+    # Assegna i nomi delle caratteristiche al dataset trasformato
+    X_train_transformed.columns = feature_names
+    X_test_transformed.columns = feature_names
     # Crea una nuova istanza di SelectKBest utilizzando f_regression come funzione di punteggio
     fs = SelectKBest(score_func=f_regression, k=5)
     # Esegui il fitting di SelectKBest sul dataset trasformato
+    print("fs")
+    print(fs)
+    print("X_train")
+    print(X_train)
+    print("y_train")
+    print(y_train)
     fs.fit(X_train, y_train)
     # Trasforma il dataset di addestramento e il dataset di test utilizzando SelectKBest
     X_train_fs = fs.transform(X_train_transformed)
     x_test_fs = fs.transform(X_test_transformed)
     # Ottieni i nomi delle caratteristiche selezionate
-    feature_names = vectorizer.get_feature_names()
+    feature_names = vectorizer.get_feature_names_out()
     # Stampa i nomi delle caratteristiche selezionate insieme ai loro punteggi
     print("regression test results:")
     for i in range(len(fs.scores_)):
         print('Feature %s: %f' % (feature_names[i], fs.scores_[i]))
-
-
-
+        
 def check_z_scores(df):
     # Normalizziamo il DataFrame con la funzione zscore()
     df = df.apply(st.zscore)
@@ -70,12 +78,11 @@ def check_z_scores(df):
     df = df.reset_index()
     return df
 
-
 df = pd.read_csv('../Dataset/numerical_data.csv')
 df_z_scores = check_z_scores(df)
-df_filtered = df[df.index.isin(df_z_scores['index'])]
-df = df_filtered
+df = df[df.index.isin(df_z_scores['index'])]
 print(df.info)
+
 for att in df.columns[:-1]:
     plt.figure()
     print(df[att].max())
@@ -91,5 +98,5 @@ for att in df.columns[:-1]:
     plt.xlabel(att)
     plt.title(f'boxplot of {att} attribute')
     plt.show()
+    
 correlationWithPrice(df)
-
