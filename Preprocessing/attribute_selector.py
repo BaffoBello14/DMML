@@ -11,6 +11,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.feature_extraction.text import CountVectorizer
 from scipy.stats import spearmanr, kendalltau
 
+
 def correlationWithPrice(df):
     print("Spearman")
     for i in df.columns:
@@ -58,8 +59,27 @@ def correlationWithPrice(df):
     print("regression test results:")
     for i in range(len(fs.scores_)):
         print('Feature %s: %f' % (feature_names[i], fs.scores_[i]))
-        
-def check_z_scores(df):
+
+
+def numerical_graph(df_numerical):
+    for att in df_numerical.columns[:-1]:
+        plt.figure()
+        print(df_numerical[att].max())
+        print(df_numerical[att].min())
+        plt.hist(df_numerical[att], range=(df_numerical[att].min(), df_numerical[att].max()))
+        plt.ylabel('occurrences')
+        plt.xlabel(att)
+        plt.title(f'histogram of {att} attribute')
+        plt.show()
+    for att in df_numerical.columns[:-1]:
+        plt.boxplot(df_numerical[att])
+        plt.ylabel('values')
+        plt.xlabel(att)
+        plt.title(f'boxplot of {att} attribute')
+        plt.show()
+
+
+def check_numerical_z_scores(df):
     # Normalizziamo il DataFrame con la funzione zscore()
     df = df.apply(st.zscore)
 
@@ -72,25 +92,60 @@ def check_z_scores(df):
     df = df.reset_index()
     return df
 
-df = pd.read_csv('../Dataset/numerical_data.csv')
-df_z_scores = check_z_scores(df)
-df = df[df.index.isin(df_z_scores['index'])]
-print(df.info)
 
-for att in df.columns[:-1]:
-    plt.figure()
-    print(df[att].max())
-    print(df[att].min())
-    plt.hist(df[att], range=(df[att].min(), df[att].max()))
-    plt.ylabel('occurrences')
-    plt.xlabel(att)
-    plt.title(f'histogram of {att} attribute')
-    plt.show()
-for att in df.columns[:-1]:
-    plt.boxplot(df[att])
-    plt.ylabel('values')
-    plt.xlabel(att)
-    plt.title(f'boxplot of {att} attribute')
-    plt.show()
-    
-correlationWithPrice(df)
+def categorical_graph(df):
+    for att in df.columns[:-1]:
+        plt.figure()
+        plt.hist(df[att], range=(df[att].min(), df[att].max()))
+        plt.ylabel('occurrences')
+        plt.xlabel(att)
+        plt.title(f'histogram of {att} attribute')
+        plt.show()
+    for att in df.columns[:-1]:
+        plt.boxplot(df[att])
+        plt.ylabel('values')
+        plt.xlabel(att)
+        plt.title(f'boxplot of {att} attribute')
+        plt.show()
+
+
+def test_chi2(col_a, col_b):
+    # conversione in tabella di frequenze incrociate, poiché per il test di chi-quadrato è necessario prima convertire le variabili in una tabella di frequenze incrociate
+    tabella_incrociata = pd.crosstab(df[col_a], df[col_b])
+    # Ottenimento del valore p e di altre informazioni utili
+    stat, p, dof, attese = st.chi2_contingency(tabella_incrociata)
+
+    # Arrotondamento dei valori p molto piccoli a zero
+    p_arrotondato = pd.DataFrame.round(p, 5)
+
+    # Le frequenze attese dovrebbero essere almeno 5 per la maggior parte (80%) delle celle.
+    # Qui si verifica la frequenza attesa di ogni gruppo
+    cnt_attese = attese[attese < 5].size
+
+    # Ottenimento del percentuale
+    perc_attese = ((attese.size - cnt_attese) / attese.size) * 100
+    if perc_attese < 20:
+        return 1
+
+    if col_a == col_b:
+        return 0
+
+    return p_arrotondato
+
+
+
+df_categorical = pd.read_csv('../Dataset/categorical_data.csv')
+matrice_chi2 = pd.DataFrame(index=df_categorical.columns, columns=df_categorical.columns)
+# Passaggio degli argomenti corretti alla funzione
+matrice_chi2 = matrice_chi2.applymap(lambda x: test_chi2(x[0], x[1]))
+matrice_chi2.to_csv('../Dataset/chi2_matrix.csv')
+print(matrice_chi2)
+#categorical_graph(df_categorical)
+df_numerical = pd.read_csv('../Dataset/numerical_data.csv')
+df_z_scores = check_numerical_z_scores(df_numerical)
+df_numerical = df_numerical[df_numerical.index.isin(df_z_scores['index'])]
+print(df_numerical.info)
+numerical_graph(df_numerical)
+
+correlationWithPrice(df_numerical)
+

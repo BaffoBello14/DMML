@@ -23,6 +23,7 @@ def delete_useless_columns(df):
     df.drop('image_url', axis=1, inplace=True)
     df.drop('county', axis=1, inplace=True)
     df.drop('description', axis=1, inplace=True)
+    df.drop('posting_date', axis=1, inplace=True)
     df["condition"].replace('salvage', 1, inplace=True)
     df["condition"].replace('fair', 2, inplace=True)
     df["condition"].replace('good', 3, inplace=True)
