@@ -109,14 +109,55 @@ def categorical_graph(df):
         plt.show()
 
 
-def test_chi2(col_a, col_b):
+def chi2_test_on_categorical_features():
+    # this function performs chi2 test on categorical features to find
+    # their mutual correlation
+    # loading categorical data
+    dfc = pd.read_csv('../Dataset/categorical_data.csv', na_filter=False)
+    column_names = dfc.columns
+    # Assigning column names to row index
+    chisqmatrix = pd.DataFrame(dfc, columns=column_names, index=column_names)
+
+    for icol in column_names:  # Outer loop
+        for jcol in column_names:  # inner loop
+            if icol == 'Unnamed: 0' or jcol == 'Unnamed: 0':
+                continue
+            # converting to cross tab as for chi2 test we have to first covert variables into contigency table
+            mycrosstab = pd.crosstab(dfc[icol], dfc[jcol])
+            # Getting p-value and other usefull information
+            stat, p, dof, expected = st.chi2_contingency(mycrosstab)
+
+            # Rounding very small p-values to zero
+            chisqmatrix.loc[icol, jcol] = round(p, 5)
+
+            # Expected frequencies should be at
+            # least 5 for the majority (80%) of the cells.
+            # Here we are checking expected frequency of each group
+            cntexpected = expected[expected < 5].size
+
+            # Getting percentage
+            perexpected = ((expected.size - cntexpected) / expected.size) * 100
+            if perexpected < 20:
+                chisqmatrix.loc[icol, jcol] = 2  # Assigning 2
+
+            if icol == jcol:
+                chisqmatrix.loc[icol, jcol] = 0.00
+
+    # Saving chi2 results
+    chisqmatrix.to_csv('../Dataset/chi2_matrix.csv')
+
+'''
+def test_chi2(df, col_a, col_b):
+    if col_a == col_b:
+        return 0
     # conversione in tabella di frequenze incrociate, poiché per il test di chi-quadrato è necessario prima convertire le variabili in una tabella di frequenze incrociate
     tabella_incrociata = pd.crosstab(df[col_a], df[col_b])
     # Ottenimento del valore p e di altre informazioni utili
     stat, p, dof, attese = st.chi2_contingency(tabella_incrociata)
+    print(stat, p, dof, attese)
 
     # Arrotondamento dei valori p molto piccoli a zero
-    p_arrotondato = pd.DataFrame.round(p, 5)
+    #p_arrotondato = round(p, 5)
 
     # Le frequenze attese dovrebbero essere almeno 5 per la maggior parte (80%) delle celle.
     # Qui si verifica la frequenza attesa di ogni gruppo
@@ -125,21 +166,27 @@ def test_chi2(col_a, col_b):
     # Ottenimento del percentuale
     perc_attese = ((attese.size - cnt_attese) / attese.size) * 100
     if perc_attese < 20:
-        return 1
-
-    if col_a == col_b:
-        return 0
-
-    return p_arrotondato
+        return 2
+    return p
 
 
 
-df_categorical = pd.read_csv('../Dataset/categorical_data.csv')
-matrice_chi2 = pd.DataFrame(index=df_categorical.columns, columns=df_categorical.columns)
+
+df_categorical = pd.read_csv('../Dataset/numerical_data.csv')
+df_senza_Unnamed = df_categorical.loc[:, ~df_categorical.columns.isin(['Unnamed: 0'])]
+matrice_chi2 = pd.DataFrame(df_senza_Unnamed, index=df_senza_Unnamed.columns, columns=df_senza_Unnamed.columns)
 # Passaggio degli argomenti corretti alla funzione
-matrice_chi2 = matrice_chi2.applymap(lambda x: test_chi2(x[0], x[1]))
+for col_a in df_categorical.columns:
+    for col_b in df_categorical.columns:
+        if col_a == 'Unnamed: 0' or col_b == 'Unnamed: 0':
+            continue
+        print(col_a)
+        print(col_b)
+        matrice_chi2[col_a][col_b] = test_chi2(df_categorical, col_a, col_b)
 matrice_chi2.to_csv('../Dataset/chi2_matrix.csv')
 print(matrice_chi2)
+'''
+chi2_test_on_categorical_features()
 #categorical_graph(df_categorical)
 df_numerical = pd.read_csv('../Dataset/numerical_data.csv')
 df_z_scores = check_numerical_z_scores(df_numerical)
