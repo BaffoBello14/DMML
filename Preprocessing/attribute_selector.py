@@ -205,7 +205,8 @@ df_numerical.to_csv('../Dataset/numerical_data.csv')
 df_categorical.drop('Unnamed: 0', axis=1, inplace=True)
 df_categorical.to_csv('../Dataset/categorical_data.csv')
 df.drop('Unnamed: 0', axis=1, inplace=True)
-df.to_csv('vehicles_preprocessed.csv')
+df = df[(df['price'].between(300, 180000))]
+df.to_csv('../Dataset/vehicles_preprocessed.csv')
 numerical_graph(df_numerical)
 correlationWithPrice(df_numerical)
 
