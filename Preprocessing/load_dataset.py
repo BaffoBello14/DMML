@@ -57,6 +57,7 @@ def split_categorical_numerical(df):
     df.loc[:, numerical_columns].to_csv('../Dataset/numerical_data.csv')
 
 
+
 df = import_dataset()
 delete_useless_columns(df)
 print(df.describe())
@@ -64,4 +65,9 @@ print(df.info())
 print(df.isnull().sum())
 print(df.info)
 split_categorical_numerical(df)
+for column in df:
+    if df[column].dtypes == object:
+        ordinal_label = {k: i for i, k in enumerate(df[column].unique(), 0)}
+        df[column] = df[column].map(ordinal_label)
 
+df.to_csv('../Dataset/vehicles_preprocessed.csv')

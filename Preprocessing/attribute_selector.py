@@ -120,7 +120,7 @@ def chi2_test_on_categorical_features():
 
     for icol in column_names:  # Outer loop
         for jcol in column_names:  # inner loop
-            if icol == 'Unnamed: 0' or jcol == 'Unnamed: 0':
+            if icol == 'Unnamed: 0' or jcol == 'Unnamed: 0' or jcol == 'manufacturer' or icol == 'manufacturer':
                 continue
             # converting to cross tab as for chi2 test we have to first covert variables into contigency table
             mycrosstab = pd.crosstab(dfc[icol], dfc[jcol])
@@ -185,14 +185,27 @@ for col_a in df_categorical.columns:
         matrice_chi2[col_a][col_b] = test_chi2(df_categorical, col_a, col_b)
 matrice_chi2.to_csv('../Dataset/chi2_matrix.csv')
 print(matrice_chi2)
-'''
+
 chi2_test_on_categorical_features()
 #categorical_graph(df_categorical)
+'''
 df_numerical = pd.read_csv('../Dataset/numerical_data.csv')
 df_z_scores = check_numerical_z_scores(df_numerical)
 df_numerical = df_numerical[df_numerical.index.isin(df_z_scores['index'])]
+df_categorical = pd.read_csv('../Dataset/categorical_data.csv')
+df_categorical = df_categorical[df_categorical.index.isin(df_z_scores['index'])]
+df = pd.read_csv('../Dataset/vehicles_preprocessed.csv')
+df = df[df.index.isin(df_z_scores['index'])]
 print(df_numerical.info)
-numerical_graph(df_numerical)
+print(df_categorical.info)
+print(df.info)
 
+df_numerical.drop('Unnamed: 0', axis=1, inplace=True)
+df_numerical.to_csv('../Dataset/numerical_data.csv')
+df_categorical.drop('Unnamed: 0', axis=1, inplace=True)
+df_categorical.to_csv('../Dataset/categorical_data.csv')
+df.drop('Unnamed: 0', axis=1, inplace=True)
+df.to_csv('vehicles_preprocessed.csv')
+numerical_graph(df_numerical)
 correlationWithPrice(df_numerical)
 

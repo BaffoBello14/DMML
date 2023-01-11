@@ -7,6 +7,13 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -17,14 +24,15 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/Preprocessing/load_dataset.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/Preprocessing/attribute_selector.py" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\fedef\OneDrive\Documenti\GitHub\DMML\Dataset" />
       <recent name="C:\Users\fedef\OneDrive\Documenti\GitHub\DMML\Preprocessing" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.attribute_selector">
+  <component name="RunManager" selected="Python.correlation_analisys">
     <configuration name="attribute_selector" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="DMML" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -32,12 +40,33 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="C:\Users\fedef\miniconda3\envs\DMML\python.exe" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Dataset" />
+      <option name="SDK_HOME" value="C:\Users\fedef\miniconda3\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Preprocessing" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Preprocessing/attribute_selector.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="correlation_analisys" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="DMML" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Dataset" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Preprocessing/correlation_analisys.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -68,6 +97,7 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Python.correlation_analisys" />
       <item itemvalue="Python.attribute_selector" />
       <item itemvalue="Python.load_dataset" />
     </list>
@@ -88,29 +118,29 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="395" y="91" key="#Inspections/0.0.1536.824@0.0.1536.824" timestamp="1673108955039" />
-    <state x="223" y="67" width="1089" height="737" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1673282024806">
+    <state x="223" y="63" width="1089" height="761" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1673432535032">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="223" y="67" width="1089" height="737" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1673282024806" />
-    <state x="548" y="179" key="FileChooserDialogImpl" timestamp="1673282023203">
+    <state x="223" y="63" width="1089" height="761" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1673432535032" />
+    <state x="548" y="179" key="FileChooserDialogImpl" timestamp="1673429323558">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="548" y="179" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1673282023203" />
-    <state width="1515" height="210" key="GridCell.Tab.0.bottom" timestamp="1673366638052">
+    <state x="548" y="179" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1673429323558" />
+    <state width="1515" height="210" key="GridCell.Tab.0.bottom" timestamp="1673434273212">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="210" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1673366638052" />
-    <state width="1515" height="210" key="GridCell.Tab.0.center" timestamp="1673366638052">
+    <state width="1515" height="210" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1673434273212" />
+    <state width="1515" height="210" key="GridCell.Tab.0.center" timestamp="1673434273212">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="210" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1673366638052" />
-    <state width="1515" height="210" key="GridCell.Tab.0.left" timestamp="1673366638051">
+    <state width="1515" height="210" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1673434273212" />
+    <state width="1515" height="210" key="GridCell.Tab.0.left" timestamp="1673434273211">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="210" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1673366638051" />
-    <state width="1515" height="210" key="GridCell.Tab.0.right" timestamp="1673366638052">
+    <state width="1515" height="210" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1673434273211" />
+    <state width="1515" height="210" key="GridCell.Tab.0.right" timestamp="1673434273212">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="210" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1673366638052" />
+    <state width="1515" height="210" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1673434273212" />
   </component>
 </project>
