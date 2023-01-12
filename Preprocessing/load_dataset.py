@@ -24,23 +24,15 @@ def delete_useless_columns(df):
     df.drop('county', axis=1, inplace=True)
     df.drop('description', axis=1, inplace=True)
     df.drop('posting_date', axis=1, inplace=True)
-    df["condition"].replace('salvage', 1, inplace=True)
-    df["condition"].replace('fair', 2, inplace=True)
-    df["condition"].replace('good', 3, inplace=True)
-    df["condition"].replace('excellent', 4, inplace=True)
-    df["condition"].replace('like new', 4, inplace=True)
-    df["condition"].replace('new', 5, inplace=True)
-    df["condition"].replace(pd.np.nan, 3, inplace=True)
-    '''
-    df["transmission"].replace('automatic', 1, inplace=True)
-    df["transmission"].replace('manual', 0, inplace=True)
-    df["transmission"].replace('other', float("NaN"), inplace=True) # da valutare se eliminare o meno i NaN
-    '''
-    df["type"].replace(pd.np.nan, 'unknown', inplace=True)
+    df["condition"].replace(pd.np.nan, 'good', inplace=True)
+    '''df["type"].replace(pd.np.nan, 'unknown', inplace=True)
     df["cylinders"].replace(pd.np.nan, 'unknown', inplace=True)
     df["drive"].replace(pd.np.nan, 'unknown', inplace=True)
-    df["paint_color"].replace(pd.np.nan, 'unknown', inplace=True)
-    df.dropna(inplace=True)
+    df["paint_color"].replace(pd.np.nan, 'unknown', inplace=True)'''
+    df.dropna(
+        subset=['price', 'odometer', 'year', 'manufacturer', 'cylinders', 'fuel', 'transmission', 'drive', 'type'],
+        inplace=True)
+    # Eliminando tutti i NULL si raggiunge circa lo 0.65 di accuracy (RF)
 
 
 def split_categorical_numerical(df):

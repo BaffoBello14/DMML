@@ -85,7 +85,7 @@ def check_numerical_z_scores(df):
 
     # Utilizza la funzione between() per selezionare solo le righe che soddisfano la condizione
     df = df[(df['price'].between(-0.01, 0.01)) &
-            (df['odometer'].between(-1.8, 1.8)) &
+            (df['odometer'].between(-1.0, 1.0)) &
             (df['year'].between(-2.2, 2.2))]
 
     # Reimposta gli indici del DataFrame per poterli confrontare con gli indici di df
@@ -189,6 +189,9 @@ print(matrice_chi2)
 chi2_test_on_categorical_features()
 #categorical_graph(df_categorical)
 '''
+
+
+
 df_numerical = pd.read_csv('../Dataset/numerical_data.csv')
 df_z_scores = check_numerical_z_scores(df_numerical)
 df_numerical = df_numerical[df_numerical.index.isin(df_z_scores['index'])]
@@ -208,5 +211,5 @@ df.drop('Unnamed: 0', axis=1, inplace=True)
 df = df[(df['price'].between(300, 180000))]
 df.to_csv('../Dataset/vehicles_preprocessed.csv')
 numerical_graph(df_numerical)
-correlationWithPrice(df_numerical)
+correlationWithPrice(df)
 

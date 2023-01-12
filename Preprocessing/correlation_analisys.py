@@ -19,13 +19,13 @@ for i in df.columns:
             print(f'Correlazione con price di {i} = {corr_i}')
             corr_j, p_value = spearmanr(df['price'], df[j])
             print(f'Correlazione con price di {j} = {corr_j}')
-            if corr_i > corr_j:
+            if (corr_i > corr_j) :
                 df.drop(j, axis=1, inplace=True)
                 feature_dropped.append(j)
             else:
                 df.drop(i, axis=1, inplace=True)
                 feature_dropped.append(i)
-print('Cerco scarse correlaizoni con price')
+print('Cerco scarse correlazioni con price')
 for i in df.columns:
     if i in feature_dropped:
         continue
