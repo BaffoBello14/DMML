@@ -42,7 +42,7 @@ def correlationWithPrice(df):
     X_train_transformed = vectorizer.transform(X_train)
     X_test_transformed = vectorizer.transform(X_test)
     # Genera i nomi delle caratteristiche per il dataset trasformato
-    feature_names = vectorizer.get_feature_names_out()
+    feature_names = vectorizer.get_feature_names()
     # Assegna i nomi delle caratteristiche al dataset trasformato
     X_train_transformed.columns = feature_names
     X_test_transformed.columns = feature_names
@@ -54,7 +54,7 @@ def correlationWithPrice(df):
     X_train_fs = fs.transform(X_train_transformed)
     x_test_fs = fs.transform(X_test_transformed)
     # Ottieni i nomi delle caratteristiche selezionate
-    feature_names = vectorizer.get_feature_names_out()
+    feature_names = vectorizer.get_feature_names()
     # Stampa i nomi delle caratteristiche selezionate insieme ai loro punteggi
     print("regression test results:")
     for i in range(len(fs.scores_)):
@@ -84,10 +84,9 @@ def check_numerical_z_scores(df):
     df = df.apply(st.zscore)
 
     # Utilizza la funzione between() per selezionare solo le righe che soddisfano la condizione
-    df = df[(df['price'].between(-0.01, 0.01)) &
-            (df['odometer'].between(-1.0, 1.0)) &
-            (df['year'].between(-2.2, 2.2))]
-
+    #df = df[(df['price'].between(-0.01, 0.01)) &
+    #        (df['odometer'].between(-1.0, 1.0)) &
+    #       (df['year'].between(-2.2, 2.2))]
     # Reimposta gli indici del DataFrame per poterli confrontare con gli indici di df
     df = df.reset_index()
     return df
@@ -190,9 +189,23 @@ chi2_test_on_categorical_features()
 #categorical_graph(df_categorical)
 '''
 
+def outlier_deleter(df):
+    lower_bound = np.quantile(df['price'], q=0.10)
+    upper_bound = np.quantile(df['price'], q=0.90)
+    print(lower_bound)
+    print(upper_bound)
+    df = df[(df['price'].between(lower_bound, upper_bound))]
+    lower_bound = np.quantile(df['odometer'], q=0.10)
+    upper_bound = np.quantile(df['odometer'], q=0.90)
+    print(lower_bound)
+    print(upper_bound)
+    df = df[(df['odometer'].between(lower_bound, upper_bound))]
+    print(df.info)
+    return df
 
 
 df_numerical = pd.read_csv('../Dataset/numerical_data.csv')
+df_numerical = outlier_deleter(df_numerical)
 df_z_scores = check_numerical_z_scores(df_numerical)
 df_numerical = df_numerical[df_numerical.index.isin(df_z_scores['index'])]
 df_categorical = pd.read_csv('../Dataset/categorical_data.csv')
@@ -208,7 +221,6 @@ df_numerical.to_csv('../Dataset/numerical_data.csv')
 df_categorical.drop('Unnamed: 0', axis=1, inplace=True)
 df_categorical.to_csv('../Dataset/categorical_data.csv')
 df.drop('Unnamed: 0', axis=1, inplace=True)
-df = df[(df['price'].between(300, 180000))]
 df.to_csv('../Dataset/vehicles_preprocessed.csv')
 numerical_graph(df_numerical)
 correlationWithPrice(df)

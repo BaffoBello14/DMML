@@ -21,9 +21,7 @@ def delete_useless_columns(df):
     df.drop('VIN', axis=1, inplace=True)
     df.drop('size', axis=1, inplace=True)
     df.drop('image_url', axis=1, inplace=True)
-    df.drop('county', axis=1, inplace=True)
     df.drop('description', axis=1, inplace=True)
-    df.drop('posting_date', axis=1, inplace=True)
     df["condition"].replace(pd.np.nan, 'good', inplace=True)
     '''df["type"].replace(pd.np.nan, 'unknown', inplace=True)
     df["cylinders"].replace(pd.np.nan, 'unknown', inplace=True)
@@ -50,16 +48,23 @@ def split_categorical_numerical(df):
 
 
 
+df2=pd.read_csv("../Dataset/vehicles_8.csv")
+df2.drop('Unnamed: 0', axis=1, inplace=True)
+df2['age'] = 2020 - df2['year']
+'''for i in df2.nrows:
+    data = df2[i]['posting_date']
+    data = data[0:3]
+    
+print(df2['posting_date'])'''
 df = import_dataset()
-delete_useless_columns(df)
-print(df.describe())
-print(df.info())
-print(df.isnull().sum())
-print(df.info)
-split_categorical_numerical(df)
-for column in df:
-    if df[column].dtypes == object:
-        ordinal_label = {k: i for i, k in enumerate(df[column].unique(), 0)}
-        df[column] = df[column].map(ordinal_label)
-
-df.to_csv('../Dataset/vehicles_preprocessed.csv')
+df['age'] = 2022 - df['year']
+df.drop('county', axis=1, inplace=True)
+df_merged = pd.merge(df, df2, how="outer")
+delete_useless_columns(df_merged)
+split_categorical_numerical(df_merged)
+for column in df_merged:
+    if df_merged[column].dtypes == object:
+        ordinal_label = {k: i for i, k in enumerate(df_merged[column].unique(), 0)}
+        df_merged[column] = df_merged[column].map(ordinal_label)
+print(df_merged.info)
+df_merged.to_csv('../Dataset/vehicles_preprocessed.csv')
