@@ -4,10 +4,16 @@ import numpy as np
 categorical_columns = []
 numerical_columns = []
 
-
 def import_dataset():
-    # Carica il file CSV in un DataFrame di pandas
-    df = pd.read_csv("../Dataset/vehicles.csv")
+    df1 = pd.read_csv("../Dataset/vehicles10.csv")
+    df1['age'] = 2022 - df1['year']
+    df1.drop('county', axis=1, inplace=True)
+    
+    df2 = pd.read_csv("../Dataset/vehicles8.csv")
+    df2.drop('Unnamed: 0', axis=1, inplace=True)
+    df2['age'] = 2020 - df2['year']
+    
+    df = pd.merge(df1, df2, how="outer")
     return df
 
 
@@ -23,10 +29,6 @@ def delete_useless_columns(df):
     df.drop('image_url', axis=1, inplace=True)
     df.drop('description', axis=1, inplace=True)
     df["condition"].replace(pd.np.nan, 'good', inplace=True)
-    '''df["type"].replace(pd.np.nan, 'unknown', inplace=True)
-    df["cylinders"].replace(pd.np.nan, 'unknown', inplace=True)
-    df["drive"].replace(pd.np.nan, 'unknown', inplace=True)
-    df["paint_color"].replace(pd.np.nan, 'unknown', inplace=True)'''
     df.dropna(
         subset=['price', 'odometer', 'year', 'manufacturer', 'cylinders', 'fuel', 'transmission', 'drive', 'type'],
         inplace=True)
@@ -46,25 +48,21 @@ def split_categorical_numerical(df):
     df.loc[:, categorical_columns].to_csv('../Dataset/categorical_data.csv')
     df.loc[:, numerical_columns].to_csv('../Dataset/numerical_data.csv')
 
-
-
-df2=pd.read_csv("../Dataset/vehicles_8.csv")
-df2.drop('Unnamed: 0', axis=1, inplace=True)
-df2['age'] = 2020 - df2['year']
-'''for i in df2.nrows:
-    data = df2[i]['posting_date']
-    data = data[0:3]
-    
-print(df2['posting_date'])'''
+#Carichiamo i Dataset
 df = import_dataset()
-df['age'] = 2022 - df['year']
-df.drop('county', axis=1, inplace=True)
-df_merged = pd.merge(df, df2, how="outer")
-delete_useless_columns(df_merged)
-split_categorical_numerical(df_merged)
-for column in df_merged:
-    if df_merged[column].dtypes == object:
-        ordinal_label = {k: i for i, k in enumerate(df_merged[column].unique(), 0)}
-        df_merged[column] = df_merged[column].map(ordinal_label)
-print(df_merged.info)
-df_merged.to_csv('../Dataset/vehicles_preprocessed.csv')
+
+#Eliminiamo le colonne non utili alla nostra analisi
+delete_useless_columns(df)
+
+#Dividiamo il dataset in due dataset: uno con i valori categori, l'altro con i numerici
+split_categorical_numerical(df)
+
+#Trasformiamo i valori categorici in numerici attraverso l'enumerazione
+for column in df:
+    if df[column].dtypes == object:
+        ordinal_label = {k: i for i, k in enumerate(df[column].unique(), 0)}
+        df[column] = df[column].map(ordinal_label)
+print(df.info)
+
+#Salviamo il Dataset
+df.to_csv('../Dataset/vehicles_preprocessed.csv')
