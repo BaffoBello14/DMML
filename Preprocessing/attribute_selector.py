@@ -200,6 +200,8 @@ def outlier_deleter(df):
     print(lower_bound)
     print(upper_bound)
     df = df[(df['odometer'].between(lower_bound, upper_bound))]
+
+    df = df[df['year'].between(1990, 2023)]
     print(df.info)
     return df
 

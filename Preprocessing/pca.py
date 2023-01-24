@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 
 # Carichiamo il dataset
-data = pd.read_csv("../Dataset/preprocessed_vehicles.csv")
+data = pd.read_csv("../Dataset/vehicles_preprocessed.csv")
 
 # Inizializzazione dell'oggetto PCA
 pca = PCA()
@@ -25,3 +25,4 @@ pca.fit(data)
 
 # Trasformazione del dataset originale in base alle componenti principali
 transformed_data = pca.transform(data)
+transformed_data.to_csv("../Dataset/PCA.csv")

@@ -14,7 +14,7 @@ def randomForestEvaluation(df):
     X_trainn = df.loc[:, df.columns != 'price']
     y_trainn = df['price']
     # Regression Model based on Random Forest Algorithm
-    ran_forest = RandomForestRegressor(max_depth=4, random_state=0)
+    ran_forest = RandomForestRegressor(max_depth=6, random_state=0)
 
     scores = cross_validate(ran_forest, X_trainn, y_trainn, scoring=('r2', 'explained_variance'), cv=10)
     print("results for ran_forest")
@@ -69,7 +69,7 @@ def elasticNet(df):
     X_trainn = df.loc[:, df.columns != 'price']
     y_trainn = df['price']
     # Regression model based on Elastic Net algorithm
-    en = ElasticNet(alpha=0.01)
+    en = ElasticNet(alpha=0.01, max_iter=1000)
     scores = cross_validate(en, X_trainn, y_trainn, scoring=('r2',  'explained_variance'), cv=10)
     print("results for Elastic Net")
     print(np.mean(scores['test_r2']))
@@ -88,7 +88,7 @@ def lassoAlg(df):
     X_trainn = df.loc[:, df.columns != 'price']
     y_trainn = df['price']
     # Linear  Regression model based on Lasso algorithm
-    lasso = Lasso(alpha=0.01)
+    lasso = Lasso(alpha=0.01, max_iter=1000)
     scores = cross_validate(lasso, X_trainn, y_trainn, scoring=('r2', 'explained_variance'), cv=10)
     print("results for Lasso")
     print(np.mean(scores['test_r2']))
@@ -103,9 +103,9 @@ df = pd.read_csv('../Dataset/vehicles_preprocessed.csv')
 #df.drop('lat', inplace=True, axis=1)
 #df.drop('long', inplace=True, axis=1)
 df.dropna(inplace=True)
-#randomForestEvaluation(df)
+randomForestEvaluation(df)
 linearRegressionAlg(df)
-kNearestNeighbours(df)
+#kNearestNeighbours(df)
 elasticNet(df)
 lassoAlg(df)
 
