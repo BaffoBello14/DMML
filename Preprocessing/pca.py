@@ -1,8 +1,9 @@
 from sklearn.decomposition import PCA
 import numpy as np
+import pandas as pd
 
-# Creazione di una dataset fittizia
-data = np.random.randn(50, 5)
+# Carichiamo il dataset
+data = pd.read_csv("../Dataset/preprocessed_vehicles.csv")
 
 # Inizializzazione dell'oggetto PCA
 pca = PCA()
