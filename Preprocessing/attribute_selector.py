@@ -61,6 +61,7 @@ def correlationWithPrice(df):
         print('Feature %s: %f' % (feature_names[i], fs.scores_[i]))
 
 
+
 def numerical_graph(df_numerical):
     for att in df_numerical.columns[:-1]:
         plt.figure()
@@ -145,49 +146,6 @@ def chi2_test_on_categorical_features():
     # Saving chi2 results
     chisqmatrix.to_csv('../Dataset/chi2_matrix.csv')
 
-'''
-def test_chi2(df, col_a, col_b):
-    if col_a == col_b:
-        return 0
-    # conversione in tabella di frequenze incrociate, poiché per il test di chi-quadrato è necessario prima convertire le variabili in una tabella di frequenze incrociate
-    tabella_incrociata = pd.crosstab(df[col_a], df[col_b])
-    # Ottenimento del valore p e di altre informazioni utili
-    stat, p, dof, attese = st.chi2_contingency(tabella_incrociata)
-    print(stat, p, dof, attese)
-
-    # Arrotondamento dei valori p molto piccoli a zero
-    #p_arrotondato = round(p, 5)
-
-    # Le frequenze attese dovrebbero essere almeno 5 per la maggior parte (80%) delle celle.
-    # Qui si verifica la frequenza attesa di ogni gruppo
-    cnt_attese = attese[attese < 5].size
-
-    # Ottenimento del percentuale
-    perc_attese = ((attese.size - cnt_attese) / attese.size) * 100
-    if perc_attese < 20:
-        return 2
-    return p
-
-
-
-
-df_categorical = pd.read_csv('../Dataset/numerical_data.csv')
-df_senza_Unnamed = df_categorical.loc[:, ~df_categorical.columns.isin(['Unnamed: 0'])]
-matrice_chi2 = pd.DataFrame(df_senza_Unnamed, index=df_senza_Unnamed.columns, columns=df_senza_Unnamed.columns)
-# Passaggio degli argomenti corretti alla funzione
-for col_a in df_categorical.columns:
-    for col_b in df_categorical.columns:
-        if col_a == 'Unnamed: 0' or col_b == 'Unnamed: 0':
-            continue
-        print(col_a)
-        print(col_b)
-        matrice_chi2[col_a][col_b] = test_chi2(df_categorical, col_a, col_b)
-matrice_chi2.to_csv('../Dataset/chi2_matrix.csv')
-print(matrice_chi2)
-
-chi2_test_on_categorical_features()
-#categorical_graph(df_categorical)
-'''
 
 def outlier_deleter(df):
     lower_bound = np.quantile(df['price'], q=0.10)
@@ -223,6 +181,7 @@ df_numerical.to_csv('../Dataset/numerical_data.csv')
 df_categorical.drop('Unnamed: 0', axis=1, inplace=True)
 df_categorical.to_csv('../Dataset/categorical_data.csv')
 df.drop('Unnamed: 0', axis=1, inplace=True)
+df.dropna(inplace=True)
 df.to_csv('../Dataset/vehicles_preprocessed.csv')
 numerical_graph(df_numerical)
 correlationWithPrice(df)

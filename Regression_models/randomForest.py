@@ -14,18 +14,18 @@ def randomForestEvaluation(df):
     X_trainn = df.loc[:, df.columns != 'price']
     y_trainn = df['price']
     # Regression Model based on Random Forest Algorithm
-    ran_forest = RandomForestRegressor(max_depth=6, random_state=0)
+    ran_forest = RandomForestRegressor(max_depth=8, random_state=0, n_estimators=200)
 
     scores = cross_validate(ran_forest, X_trainn, y_trainn, scoring=('r2', 'explained_variance'), cv=10)
-    print("results for ran_forest")
-    print(np.mean(scores['test_r2']))
-    print(np.mean(scores['test_explained_variance']))
-
     # fitting model
     ran_forest.fit(X_train, y_train)
-
     # making predictions
     predict_y = ran_forest.predict(X_test)
+    print("results for ran_forest")
+    mse = mean_squared_error(y_test, predict_y)
+    print(mse)
+    print(np.mean(scores['test_r2']))
+    print(np.mean(scores['test_explained_variance']))
 
 
 def linearRegressionAlg(df):
@@ -36,12 +36,15 @@ def linearRegressionAlg(df):
     # Regression Model based Multiple Linear Regression Algorithm
     lm = linear_model.LinearRegression()
     scores = cross_validate(lm, X_trainn, y_trainn, scoring=('r2', 'explained_variance'), cv=10)
-    print(np.mean(scores['test_r2']))
-    print(np.mean(scores['test_explained_variance']))
     # fitting model
     lm.fit(X_train, y_train)
     # making predictions
     predict_y = lm.predict(X_test)
+    mse = mean_squared_error(y_test, predict_y)
+    print("Result for linear regression")
+    print(mse)
+    print(np.mean(scores['test_r2']))
+    print(np.mean(scores['test_explained_variance']))
 
 
 def kNearestNeighbours(df):
@@ -52,15 +55,15 @@ def kNearestNeighbours(df):
     # Regression based on k-nearest neighbors
     neigh = KNeighborsRegressor(n_neighbors=200)
     scores = cross_validate(neigh, X_trainn, y_trainn, scoring=('r2', 'explained_variance'), cv=10)
-    print("results for k-nearest neighbors")
-    print(np.mean(scores['test_r2']))
-    print(np.mean(scores['test_explained_variance']))
-
     # fitting model
     neigh.fit(X_train, y_train)
-
     # making predictions
     predict_y = neigh.predict(X_test)
+    mse = mean_squared_error(y_test, predict_y)
+    print("results for k-nearest neighbors")
+    print(mse)
+    print(np.mean(scores['test_r2']))
+    print(np.mean(scores['test_explained_variance']))
 
 
 def elasticNet(df):
@@ -71,15 +74,15 @@ def elasticNet(df):
     # Regression model based on Elastic Net algorithm
     en = ElasticNet(alpha=0.01, max_iter=1000)
     scores = cross_validate(en, X_trainn, y_trainn, scoring=('r2',  'explained_variance'), cv=10)
-    print("results for Elastic Net")
-    print(np.mean(scores['test_r2']))
-    print(np.mean(scores['test_explained_variance']))
-
     # fitting model
     en.fit(X_train, y_train)
-
     # making predictions
     predict_y = en.predict(X_test)
+    mse=mean_squared_error(y_test, predict_y)
+    print("results for Elastic Net")
+    print(mse)
+    print(np.mean(scores['test_r2']))
+    print(np.mean(scores['test_explained_variance']))
 
 
 def lassoAlg(df):
@@ -90,13 +93,15 @@ def lassoAlg(df):
     # Linear  Regression model based on Lasso algorithm
     lasso = Lasso(alpha=0.01, max_iter=1000)
     scores = cross_validate(lasso, X_trainn, y_trainn, scoring=('r2', 'explained_variance'), cv=10)
-    print("results for Lasso")
-    print(np.mean(scores['test_r2']))
-    print(np.mean(scores['test_explained_variance']))
     # fitting model
     lasso.fit(X_train, y_train)
     # making predictions
     predict_y = lasso.predict(X_test)
+    mse = mean_squared_error(y_test, predict_y)
+    print("results for Lasso")
+    print(mse)
+    print(np.mean(scores['test_r2']))
+    print(np.mean(scores['test_explained_variance']))
 
 
 df = pd.read_csv('../Dataset/vehicles_preprocessed.csv')
