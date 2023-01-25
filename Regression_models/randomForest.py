@@ -14,7 +14,7 @@ def randomForestEvaluation(df):
     X_trainn = df.loc[:, df.columns != 'price']
     y_trainn = df['price']
     # Regression Model based on Random Forest Algorithm
-    ran_forest = RandomForestRegressor(max_depth=8, random_state=0, n_estimators=200)
+    ran_forest = RandomForestRegressor(max_depth=9, random_state=0)
 
     scores = cross_validate(ran_forest, X_trainn, y_trainn, scoring=('r2', 'explained_variance'), cv=10)
     # fitting model

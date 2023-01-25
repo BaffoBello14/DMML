@@ -85,9 +85,9 @@ def check_numerical_z_scores(df):
     df = df.apply(st.zscore)
 
     # Utilizza la funzione between() per selezionare solo le righe che soddisfano la condizione
-    #df = df[(df['price'].between(-0.01, 0.01)) &
-    #        (df['odometer'].between(-1.0, 1.0)) &
-    #       (df['year'].between(-2.2, 2.2))]
+    df = df[(df['price'].between(-2.0, 2.0)) &
+            (df['odometer'].between(-2.0, 2.0)) &
+           (df['year'].between(-2.0, 2.0))]
     # Reimposta gli indici del DataFrame per poterli confrontare con gli indici di df
     df = df.reset_index()
     return df

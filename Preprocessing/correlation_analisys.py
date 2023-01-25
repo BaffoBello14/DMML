@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from scipy.stats import spearmanr
 
-feature_dropped=[]
+feature_dropped = []
 df = pd.read_csv('../Dataset/vehicles_preprocessed.csv')
 for i in df.columns:
     for j in df.columns:

@@ -6,14 +6,18 @@ numerical_columns = []
 
 def import_dataset():
     df1 = pd.read_csv("../Dataset/vehicles10.csv")
-    df1['age'] = 2022 - df1['year']
     df1.drop('county', axis=1, inplace=True)
-    
+
     df2 = pd.read_csv("../Dataset/vehicles8.csv")
     df2.drop('Unnamed: 0', axis=1, inplace=True)
-    df2['age'] = 2020 - df2['year']
-    
+
     df = pd.merge(df1, df2, how="outer")
+
+    df['posting_date'] = pd.to_datetime(df['posting_date'])
+    df['age'] = df['posting_date'].dt.year - df['year']
+
+    df.drop("posting_date", axis=1, inplace=True)
+    df.drop("year", axis=1, inplace=True)
     return df
 
 
