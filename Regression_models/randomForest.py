@@ -14,7 +14,7 @@ def randomForestEvaluation(df):
     X_trainn = df.loc[:, df.columns != 'price']
     y_trainn = df['price']
     # Regression Model based on Random Forest Algorithm
-    ran_forest = RandomForestRegressor(max_depth=9, random_state=0)
+    ran_forest = RandomForestRegressor(n_jobs=10, n_estimators=500, max_features=4)
 
     scores = cross_validate(ran_forest, X_trainn, y_trainn, scoring=('r2', 'explained_variance'), cv=10)
     # fitting model
@@ -23,6 +23,8 @@ def randomForestEvaluation(df):
     predict_y = ran_forest.predict(X_test)
     print("results for ran_forest")
     mse = mean_squared_error(y_test, predict_y)
+    df_prediction = pd.DataFrame({'real price': y_test, 'predicted price': predict_y})
+    print(df_prediction[abs(df_prediction['real price'] - df_prediction['predicted price']) > 3000])
     print(mse)
     print(np.mean(scores['test_r2']))
     print(np.mean(scores['test_explained_variance']))
@@ -73,12 +75,12 @@ def elasticNet(df):
     y_trainn = df['price']
     # Regression model based on Elastic Net algorithm
     en = ElasticNet(alpha=0.01, max_iter=1000)
-    scores = cross_validate(en, X_trainn, y_trainn, scoring=('r2',  'explained_variance'), cv=10)
+    scores = cross_validate(en, X_trainn, y_trainn, scoring=('r2', 'explained_variance'), cv=10)
     # fitting model
     en.fit(X_train, y_train)
     # making predictions
     predict_y = en.predict(X_test)
-    mse=mean_squared_error(y_test, predict_y)
+    mse = mean_squared_error(y_test, predict_y)
     print("results for Elastic Net")
     print(mse)
     print(np.mean(scores['test_r2']))
@@ -105,12 +107,14 @@ def lassoAlg(df):
 
 
 df = pd.read_csv('../Dataset/vehicles_preprocessed.csv')
-#df.drop('lat', inplace=True, axis=1)
-#df.drop('long', inplace=True, axis=1)
+# df.drop('lat', inplace=True, axis=1)
+# df.drop('long', inplace=True, axis=1)
 df.dropna(inplace=True)
+#for i in range(6, 19):
+#    print(f"Iterazione numero: {i}")
+#    randomForestEvaluation(df, i)
 randomForestEvaluation(df)
-linearRegressionAlg(df)
-#kNearestNeighbours(df)
-elasticNet(df)
-lassoAlg(df)
-
+# linearRegressionAlg(df)
+# kNearestNeighbours(df)
+# elasticNet(df)
+# lassoAlg(df)

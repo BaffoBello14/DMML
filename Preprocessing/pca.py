@@ -23,10 +23,10 @@ pca.fit(X)
 explained_variance = pca.explained_variance_ratio_
 
 # scelta automatica del numero di componenti principali
-n_components = np.argmax(np.cumsum(explained_variance) > 0.90) + 1
+n_components = np.argmax(np.cumsum(explained_variance) > 0.99) + 1
 
 # Inizializzazione dell'oggetto PCA con numero di componenti principali scelto
-pca = PCA(n_components=n_components)
+pca = PCA(n_components=5)
 
 # Adattamento dell'oggetto PCA al dataset
 pca.fit(X)
@@ -41,8 +41,8 @@ X_train, X_test, y_train, y_test = train_test_split(X_transformed, y, test_size=
 xgb = XGBRegressor(random_state=0)
 
 # Dichiarazione dei parametri da testare
-param_grid = {'max_depth': [5, 10, 15],
-              'n_estimators': [50, 100, 200]}
+param_grid = {'max_depth': [5, 15],
+              'n_estimators': [50, 200]}
 
 # Inizializzazione di GridSearchCV
 grid_search = GridSearchCV(xgb, param_grid, cv=5)
