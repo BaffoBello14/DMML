@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib as mpl
 from matplotlib import pyplot as plt
 from scipy import stats as st
+from sklearn.covariance import EllipticEnvelope
 from sklearn.model_selection import train_test_split
 from sklearn.feature_selection import chi2, SelectKBest
 from sklearn.feature_selection import f_regression
@@ -147,7 +148,7 @@ def chi2_test_on_categorical_features():
     chisqmatrix.to_csv('../Dataset/chi2_matrix.csv')
 
 
-def outlier_deleter(df):
+'''def outlier_deleter(df):
     lower_bound = np.quantile(df['price'], q=0.10)
     upper_bound = np.quantile(df['price'], q=0.90)
     print(lower_bound)
@@ -161,7 +162,25 @@ def outlier_deleter(df):
 
     df = df[df['year'].between(1990, 2023)]
     print(df.info)
+    return df'''
+
+
+def outlier_deleter(df):
+    data = pd.DataFrame({'price': df['price'], 'odometer': df['odometer'], 'year': df['year']})
+
+    # istanzia il modello
+    envelope = EllipticEnvelope(contamination=0.3)
+
+    # addestra il modello
+    envelope.fit(data)
+
+    # utilizzare il modello per classificare i dati come inlier o outlier
+    outlier_scores = envelope.decision_function(data)
+
+    inlier_indexes = data[outlier_scores > -1].index
+    df = df.loc[inlier_indexes]
     return df
+
 
 
 df_numerical = pd.read_csv('../Dataset/numerical_data.csv')
