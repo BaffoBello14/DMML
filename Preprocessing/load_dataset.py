@@ -6,18 +6,22 @@ numerical_columns = []
 
 def import_dataset():
     df1 = pd.read_csv("../Dataset/vehicles10.csv")
-    df1.drop('county', axis=1, inplace=True) 
+    df1.drop('county', axis=1, inplace=True)
+    df1['age'] = 2022 - df1['year']
 
-    df2 = pd.read_csv("../Dataset/vehicles8.csv")
-    df2.drop('Unnamed: 0', axis=1, inplace=True)
+    df2 = pd.read_csv("../Dataset/vehicles9.csv")
+    df2.rename(columns={'county': 'posting_date'}, inplace=True)
+    df2['age'] = 2021 - df2['year']
 
-    df = pd.merge(df1, df2, how="outer")
+    df3 = pd.read_csv("../Dataset/vehicles8.csv")
+    df3.drop('Unnamed: 0', axis=1, inplace=True)
+    df3['age'] = 2020 - df3['year']
 
-    #df.drop("posting_date", axis=1, inplace=True)
-    #df.drop("year", axis=1, inplace=True)
-    
+    df = pd.concat([df1, df2, df3], axis=0, sort=False)
+    df.drop("posting_date", axis=1, inplace=True)
+    df.drop("year", axis=1, inplace=True)
+
     return df
-
 
 # url, region_url, vin, size, county
 
@@ -25,7 +29,7 @@ def import_dataset():
 def delete_useless_columns(df):
     df.drop(['id', 'url', 'region_url', 'VIN', 'size', 'image_url', 'description'], axis=1, inplace=True)
     df["condition"].replace(np.nan, 'good', inplace=True)
-    df.dropna(subset=['price', 'odometer', 'year', 'manufacturer', 'cylinders', 'fuel', 'transmission', 'drive', 'type'], inplace=True)
+    df.dropna(subset=['price', 'odometer', 'age', 'manufacturer', 'cylinders', 'fuel', 'transmission', 'drive', 'type'], inplace=True)
     # Eliminando tutti i NULL si raggiunge circa lo 0.65 di accuracy (RF)
 
 def split_categorical_numerical(df):
