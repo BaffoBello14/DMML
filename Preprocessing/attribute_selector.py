@@ -3,6 +3,7 @@ import pandas as pd
 from matplotlib import pyplot as plt
 from scipy import stats as st
 from scipy.stats import spearmanr, kendalltau
+from sklearn.covariance import EllipticEnvelope
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import f_regression
@@ -145,7 +146,7 @@ def chi2_test_on_categorical_features():
     chisqmatrix.to_csv('../Dataset/chi2_matrix.csv')
 
 
-'''def outlier_deleter(df):
+def outlier_deleter(df):
     lower_bound = np.quantile(df['price'], q=0.10)
     upper_bound = np.quantile(df['price'], q=0.90)
     print(lower_bound)
@@ -160,11 +161,11 @@ def chi2_test_on_categorical_features():
     #df = df[df['year'].between(1990, 2023)]
     df = df[df['age'].between(0, 33)]
     print(df.info)
-    return df'''
+    return df
 
-
+'''
 def outlier_deleter(df):
-    data = pd.DataFrame({'price': df['price'], 'odometer': df['odometer'], 'year': df['year']})
+    data = pd.DataFrame({'price': df['price'], 'odometer': df['odometer'], 'age': df['age']})
 
     # istanzia il modello
     envelope = EllipticEnvelope(contamination=0.3)
@@ -178,7 +179,7 @@ def outlier_deleter(df):
     inlier_indexes = data[outlier_scores > -1].index
     df = df.loc[inlier_indexes]
     return df
-
+'''
 
 
 df_numerical = pd.read_csv('../Dataset/numerical_data.csv')

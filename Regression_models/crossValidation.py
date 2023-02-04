@@ -151,9 +151,9 @@ def crossValM5Rules(df):
 
 
 df = pd.read_csv("../Dataset/vehicles_preprocessed.csv")
-#crossValAdaBoostRegressor(df)  #circa 0.47
-#crossValElasticNet(df)  #circa 0.5
-#crossValLassoAlg(df)    #circa 0.5
-#crossValM5Rules(df)     #circa 0.61
-#crossValKNN(df)         #circa 0.35
-crossValRandomForest(df)
+#crossValAdaBoostRegressor(df)  #circa 0.56
+crossValElasticNet(df)  #circa 0.6
+crossValLassoAlg(df)    #circa 0.6
+crossValM5Rules(df)     #circa 0.785 (da testare con altri criterion)
+crossValKNN(df)         #circa 0.247
+#crossValRandomForest(df)   #circa 0.89
