@@ -1,15 +1,12 @@
-import pandas as pd
 import numpy as np
-import matplotlib as mpl
+import pandas as pd
 from matplotlib import pyplot as plt
 from scipy import stats as st
-from sklearn.model_selection import train_test_split
-from sklearn.feature_selection import chi2, SelectKBest
-from sklearn.feature_selection import f_regression
-from sklearn import linear_model
-from sklearn.metrics import mean_squared_error, r2_score
-from sklearn.feature_extraction.text import CountVectorizer
 from scipy.stats import spearmanr, kendalltau
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import f_regression
+from sklearn.model_selection import train_test_split
 
 
 def correlationWithPrice(df):
@@ -87,7 +84,8 @@ def check_numerical_z_scores(df):
     # Utilizza la funzione between() per selezionare solo le righe che soddisfano la condizione
     df = df[(df['price'].between(-2.0, 2.0)) &
             (df['odometer'].between(-2.0, 2.0)) &
-           (df['year'].between(-2.0, 2.0))]
+            (df['age'].between(-2.0, 2.0))] #(df['year'].between(-2.0, 2.0))
+
     # Reimposta gli indici del DataFrame per poterli confrontare con gli indici di df
     df = df.reset_index()
     return df
@@ -159,7 +157,8 @@ def outlier_deleter(df):
     print(upper_bound)
     df = df[(df['odometer'].between(lower_bound, upper_bound))]
 
-    df = df[df['year'].between(1990, 2023)]
+    #df = df[df['year'].between(1990, 2023)]
+    df = df[df['age'].between(0, 33)]
     print(df.info)
     return df
 

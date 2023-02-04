@@ -14,7 +14,7 @@ for i in df.columns:
         if i == 'Unnamed: 0' or j == 'Unnamed: 0':
             continue
         if abs(corr) > 0.8 and i != j:
-            print(f'Correlazionte tra {i} e {j}: {corr}')
+            print(f'Correlazione tra {i} e {j}: {corr}')
             corr_i, p_value = spearmanr(df['price'], df[i])
             print(f'Correlazione con price di {i} = {corr_i}')
             corr_j, p_value = spearmanr(df['price'], df[j])
