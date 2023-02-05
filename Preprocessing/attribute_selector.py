@@ -5,8 +5,7 @@ from scipy import stats as st
 from scipy.stats import spearmanr, kendalltau
 from sklearn.covariance import EllipticEnvelope
 from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.feature_selection import SelectKBest
-from sklearn.feature_selection import f_regression
+from sklearn.feature_selection import SelectKBest, f_regression
 from sklearn.model_selection import train_test_split
 
 
@@ -40,7 +39,7 @@ def correlationWithPrice(df):
     X_train_transformed = vectorizer.transform(X_train)
     X_test_transformed = vectorizer.transform(X_test)
     # Genera i nomi delle caratteristiche per il dataset trasformato
-    feature_names = vectorizer.get_feature_names()
+    feature_names = vectorizer.get_feature_names_out()
     # Assegna i nomi delle caratteristiche al dataset trasformato
     X_train_transformed.columns = feature_names
     X_test_transformed.columns = feature_names
@@ -52,7 +51,7 @@ def correlationWithPrice(df):
     X_train_fs = fs.transform(X_train_transformed)
     x_test_fs = fs.transform(X_test_transformed)
     # Ottieni i nomi delle caratteristiche selezionate
-    feature_names = vectorizer.get_feature_names()
+    feature_names = vectorizer.get_feature_names_out()
     # Stampa i nomi delle caratteristiche selezionate insieme ai loro punteggi
     print("regression test results:")
     for i in range(len(fs.scores_)):
@@ -203,4 +202,3 @@ df.dropna(inplace=True)
 df.to_csv('../Dataset/vehicles_preprocessed.csv')
 numerical_graph(df_numerical)
 correlationWithPrice(df)
-

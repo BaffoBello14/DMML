@@ -22,7 +22,7 @@ explained_variance = pca.explained_variance_ratio_
 n_components = np.argmax(np.cumsum(explained_variance) > 0.99) + 1
 
 # Inizializzazione dell'oggetto PCA con numero di componenti principali scelto
-pca = PCA(n_components=9)
+pca = PCA(n_components=5)
 
 # Adattamento dell'oggetto PCA al dataset
 pca.fit(X)
