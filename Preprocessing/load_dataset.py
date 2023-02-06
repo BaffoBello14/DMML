@@ -1,3 +1,5 @@
+import pickle
+
 import pandas as pd
 import numpy as np
 
@@ -55,10 +57,15 @@ delete_useless_columns(df)
 split_categorical_numerical(df)
 
 #Trasformiamo i valori categorici in numerici attraverso l'enumerazione
+ordinal_label = {}
 for column in df:
     if df[column].dtypes == object:
-        ordinal_label = {k: i for i, k in enumerate(df[column].unique(), 0)}
-        df[column] = df[column].map(ordinal_label)
+        ordinal_label[column] = {k: i for i, k in enumerate(df[column].unique(), 0)}
+        df[column] = df[column].map(ordinal_label[column])
+# Serializzazione della mappatura ordinal_label in un file
+with open("ordinal_label.pkl", "wb") as f:
+    pickle.dump(ordinal_label, f)
+
 print(df.info)
 
 #Salviamo il Dataset

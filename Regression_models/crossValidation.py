@@ -381,6 +381,5 @@ df = pd.read_csv("../Dataset/vehicles_preprocessed.csv")
 #crossVAlRandomForest(df)       #0.89
 #crossValGBR(df)                #0.81
 crossValSVR(df)
-crossValMLPRegressor(df)
-crossValXGBR(df)
+crossValXGBR(df)    #0.85
 crossValLightGBM(df)
