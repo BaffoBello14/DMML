@@ -1,7 +1,6 @@
-import pickle
-
 import pandas as pd
 import numpy as np
+import pickle
 
 categorical_columns = []
 numerical_columns = []
@@ -32,18 +31,22 @@ def delete_useless_columns(df):
     df.drop(['id', 'url', 'region_url', 'VIN', 'size', 'image_url', 'description'], axis=1, inplace=True)
     df["condition"].replace(np.nan, 'good', inplace=True)
     df.dropna(subset=['price', 'odometer', 'age', 'manufacturer', 'cylinders', 'fuel', 'transmission', 'drive', 'type'], inplace=True)
-    # Eliminando tutti i NULL si raggiunge circa lo 0.65 di accuracy (RF)
 
 def split_categorical_numerical(df):
+    ordinal_label = {}
     for column in df:
         if df[column].dtypes == object:
-            categorical_columns.append(column)
-            ordinal_label = {k: i for i, k in enumerate(df[column].unique(), 0)}
-            df[column] = df[column].map(ordinal_label)
+            label_map = {k: i for i, k in enumerate(df[column].unique(), 0)}
+            df[column] = df[column].map(label_map)
+            ordinal_label[column] = label_map
         else:
             numerical_columns.append(column)
     print(categorical_columns)
     print(numerical_columns)
+    # Serializzazione della mappatura ordinal_label in un file
+    with open("ordinal_label.pkl", "wb") as f:
+        pickle.dump(ordinal_label, f)
+
     df.loc[:, categorical_columns].to_csv('../Dataset/categorical_data.csv')
     df.loc[:, numerical_columns].to_csv('../Dataset/numerical_data.csv')
 
@@ -55,18 +58,7 @@ delete_useless_columns(df)
 
 #Dividiamo il dataset in due dataset: uno con i valori categori, l'altro con i numerici
 split_categorical_numerical(df)
-
 #Trasformiamo i valori categorici in numerici attraverso l'enumerazione
-ordinal_label = {}
-for column in df:
-    if df[column].dtypes == object:
-        ordinal_label[column] = {k: i for i, k in enumerate(df[column].unique(), 0)}
-        df[column] = df[column].map(ordinal_label[column])
-# Serializzazione della mappatura ordinal_label in un file
-with open("ordinal_label.pkl", "wb") as f:
-    pickle.dump(ordinal_label, f)
-
-print(df.info)
 
 #Salviamo il Dataset
 df.to_csv('../Dataset/vehicles_preprocessed.csv')

@@ -6,10 +6,8 @@ from sklearn.linear_model import Lasso, ElasticNet
 from sklearn.model_selection import KFold
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.tree import DecisionTreeRegressor
-from sklearn.neural_network import MLPRegressor
 from sklearn.svm import SVR
 from xgboost import XGBRegressor
-from lightgbm import LGBMRegressor
 
 def crossValRandomForest(df):
     X = df.drop("price", axis=1)
@@ -273,39 +271,6 @@ def crossValSVR(df):
             jl.dump(model, '../Models/svr.pkl')
 
 
-def crossValMLPRegressor(df):
-    X = df.drop("price", axis=1)
-    y = df["price"]
-
-    best_score = 0
-
-    # Inizializza il regressor rete neurale
-    model = MLPRegressor(hidden_layer_sizes=(100,100,100), max_iter=500)
-
-    # Inizializza la cross-validation k-fold con 10 divisioni
-    kfold = KFold(n_splits=10, random_state=42, shuffle=True)
-    print('Results for MLP Regressor')
-    # Inizia la cross-validation
-    for train_index, test_index in kfold.split(X):
-        X_train, X_test = X.iloc[train_index], X.iloc[test_index]
-        y_train, y_test = y.iloc[train_index], y.iloc[test_index]
-
-        # Addestra il modello sul set di training
-        model.fit(X_train, y_train)
-
-        # Valuta le prestazioni sul set di test
-        score = model.score(X_test, y_test)
-        predict_y = model.predict(X_test)
-        mse = mean_squared_error(y_test, predict_y)
-        print("Mean square error:", mse)
-        print("Accuracy:", score)
-
-        # Salvataggio del modello
-        if score > best_score:
-            best_score = score
-            jl.dump(model, '../Models/mlp_regressor.pkl')
-
-
 def crossValXGBR(df):
     X = df.drop("price", axis=1)
     y = df["price"]
@@ -339,47 +304,12 @@ def crossValXGBR(df):
             jl.dump(model, '../Models/xgbr.pkl')
 
 
-def crossValLightGBM(df):
-    X = df.drop("price", axis=1)
-    y = df["price"]
-
-    best_score = 0
-
-    # Inizializza il modello LightGBM Regressor
-    model = LGBMRegressor(n_estimators=500, max_features=4)
-
-    # Inizializza la cross-validation k-fold con 10 divisioni
-    kfold = KFold(n_splits=10, random_state=42, shuffle=True)
-    print('Results for LightGBM')
-    # Inizia la cross-validation
-    for train_index, test_index in kfold.split(X):
-        X_train, X_test = X.iloc[train_index], X.iloc[test_index]
-        y_train, y_test = y.iloc[train_index], y.iloc[test_index]
-
-        # Addestra il modello sul set di training
-        model.fit(X_train, y_train)
-
-        # Valuta le prestazioni sul set di test
-        score = model.score(X_test, y_test)
-        predict_y = model.predict(X_test)
-        mse = mean_squared_error(y_test, predict_y)
-        print("Mean square error:", mse)
-        print("Accuracy:", score)
-
-        # Salvataggio del modello
-        if score > best_score:
-            best_score = score
-            jl.dump(model, '../Models/lightgbm.pkl')
-
-
 df = pd.read_csv("../Dataset/vehicles_preprocessed.csv")
 #crossVAlAdaBoostRegressor(df)  #0.56
 #crossVAlElasticNet(df)         #0.6
 #crossVAlLassoAlg(df)           #0.6
 #crossVAlM5Rules(df)            #0.785
 #crossVAlKNN(df)                #0.247
-#crossVAlRandomForest(df)       #0.89
+crossValRandomForest(df)       #0.89
 #crossValGBR(df)                #0.81
-crossValSVR(df)
-crossValXGBR(df)    #0.85
-crossValLightGBM(df)
+#crossValXGBR(df)                #0.85
