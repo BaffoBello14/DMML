@@ -1,39 +1,36 @@
-import tkinter as tk
 from tkinter import filedialog
+import numpy as np
 import pandas as pd
 import joblib as jl
-from tkinter import ttk
 
-def load_csv():
-    global df
-    file_path = filedialog.askopenfilename()
-    df = pd.read_csv(file_path)
-    column_names = df.columns.tolist()
-    for column in column_names:
-        tree.heading(column, text=column)
-        tree.column(column, width=100)
-    for index, row in df.iterrows():
-        tree.insert("", "end", values=row.tolist())
+def load_dataset():
+    df = pd.read_csv(filedialog.askopenfilename(defaultextension='.csv', filetypes=[('CSV files', '*.csv')]))
+    df['age'] = 2023 - df['year']
+    df = df[['manufacturer', 'cylinders', 'fuel', 'odometer', 'drive', 'type', 'long', 'age', 'price']]
+    #Mostrare a video nell'app(tranne price)
+    print(df)
+    # Deserializzazione della mappatura ordinal_label dal file
+    ordinal_label = jl.load("Preprocessing/ordinal_label.pkl")
+    # Codifica delle colonne categoriche nel secondo script
+    for column in df:
+        if df[column].dtypes == object:
+            df[column] = df[column].map(ordinal_label[column])
+    return df
 
-def predict():
-    model = jl.load('Models/random_forest.pkl')
-    predict_y = model.predict(df.drop("price", axis=1))
-    predict_y = [round(y, 2) for y in predict_y]
-    text.insert(tk.END, f"\n\nPredicted prices:\n{predict_y}")
+def predict_price(df, model):
+    X = df.drop('price', axis=1)
+    y = df['price']
 
-root = tk.Tk()
-root.title("Price Predictor")
+    predict_y = model.predict(X)
+    return predict_y
 
-load_button = tk.Button(root, text="LOAD", command=load_csv)
-load_button.pack()
-
-predict_button = tk.Button(root, text="PREDICT", command=predict)
-predict_button.pack()
-
-text = tk.Text(root)
-text.pack()
-
-tree = ttk.Treeview(root)
-tree.pack()
-
-root.mainloop()
+df = load_dataset()
+df_adjusted = df
+price_time = np.zeros(5)
+model = jl.load(filedialog.askopenfilename(defaultextension='.pkl', filetypes=[('PKL files', '*.pkl')]))
+for i in range(0, 5):
+    df_adjusted['age'] = df['age'] + i
+    df_adjusted['odometer'] = (df['odometer']/df['age'])*(df['age'] + i)
+    price = predict_price(df_adjusted, model)
+    price_time[i] = price
+print(price_time)
