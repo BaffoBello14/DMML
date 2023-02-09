@@ -15,6 +15,7 @@ def import_dataset():
     df2['age'] = 2021 - df2['year']
 
     df3 = pd.read_csv("../Dataset/vehicles8.csv")
+    df3 = df3[(df3['price'].between(12500, 100000))]
     df3.drop('Unnamed: 0', axis=1, inplace=True)
     df3['age'] = 2020 - df3['year']
 
@@ -39,6 +40,7 @@ def split_categorical_numerical(df):
             label_map = {k: i for i, k in enumerate(df[column].unique(), 0)}
             df[column] = df[column].map(label_map)
             ordinal_label[column] = label_map
+            categorical_columns.append(column)
         else:
             numerical_columns.append(column)
     print(categorical_columns)
