@@ -39,7 +39,7 @@ def correlationWithPrice(df):
     X_train_transformed = vectorizer.transform(X_train)
     X_test_transformed = vectorizer.transform(X_test)
     # Genera i nomi delle caratteristiche per il dataset trasformato
-    feature_names = vectorizer.get_feature_names_out()
+    feature_names = vectorizer.get_feature_names()
     # Assegna i nomi delle caratteristiche al dataset trasformato
     X_train_transformed.columns = feature_names
     X_test_transformed.columns = feature_names
@@ -51,7 +51,7 @@ def correlationWithPrice(df):
     X_train_fs = fs.transform(X_train_transformed)
     x_test_fs = fs.transform(X_test_transformed)
     # Ottieni i nomi delle caratteristiche selezionate
-    feature_names = vectorizer.get_feature_names_out()
+    feature_names = vectorizer.get_feature_names()
     # Stampa i nomi delle caratteristiche selezionate insieme ai loro punteggi
     print("regression test results:")
     for i in range(len(fs.scores_)):
@@ -82,7 +82,7 @@ def check_numerical_z_scores(df):
     df = df.apply(st.zscore)
 
     # Utilizza la funzione between() per selezionare solo le righe che soddisfano la condizione
-    df = df[(df['price'].between(-2.0, 2.0)) &
+    df = df[(df['price'].between(-3.0, 3.0)) &
             (df['odometer'].between(-2.0, 2.0)) &
             (df['age'].between(-2.0, 2.0))] #(df['year'].between(-2.0, 2.0))
 
@@ -188,6 +188,7 @@ df_numerical = df_numerical[df_numerical.index.isin(df_z_scores['index'])]
 df_categorical = pd.read_csv('../Dataset/categorical_data.csv')
 df_categorical = df_categorical[df_categorical.index.isin(df_z_scores['index'])]
 df = pd.read_csv('../Dataset/vehicles_preprocessed.csv')
+df.to_csv('../Dataset/vehicles_preprocessed2.csv')
 df = df[df.index.isin(df_z_scores['index'])]
 print(df_numerical.info)
 print(df_categorical.info)

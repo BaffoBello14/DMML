@@ -305,6 +305,7 @@ def crossValXGBR(df):
 
 
 df = pd.read_csv("../Dataset/vehicles_preprocessed.csv")
+df.drop('Unnamed: 0', axis=1, inplace=True)
 #crossVAlAdaBoostRegressor(df)  #0.56
 #crossVAlElasticNet(df)         #0.6
 #crossVAlLassoAlg(df)           #0.6

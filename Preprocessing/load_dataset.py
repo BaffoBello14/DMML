@@ -12,10 +12,12 @@ def import_dataset():
 
     df2 = pd.read_csv("../Dataset/vehicles9.csv")
     df2.rename(columns={'county': 'posting_date'}, inplace=True)
+    df2 = df2[(df2['price'] >= 0) & (df2['price'] <= 5000) | (df2['price'] > 13000)]
     df2['age'] = 2021 - df2['year']
 
     df3 = pd.read_csv("../Dataset/vehicles8.csv")
-    df3 = df3[(df3['price'].between(12500, 100000))]
+    df3 = df3[df3['price'] > 20000]
+    #df3 = df3[(df3['price'].between(12500, 100000))]
     df3.drop('Unnamed: 0', axis=1, inplace=True)
     df3['age'] = 2020 - df3['year']
 

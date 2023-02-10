@@ -11,12 +11,10 @@ from sklearn.neighbors import KNeighborsRegressor
 def randomForestEvaluation(df):
     X_train, X_test, y_train, y_test = train_test_split(df.loc[:, df.columns != 'price'], df['price'], test_size=0.2,
                                                         train_size=0.8, random_state=np.random.seed(0))
-    X_trainn = df.loc[:, df.columns != 'price']
-    y_trainn = df['price']
     # Regression Model based on Random Forest Algorithm
     ran_forest = RandomForestRegressor(n_jobs=10, n_estimators=500, max_features=4)
 
-    scores = cross_validate(ran_forest, X_trainn, y_trainn, scoring=('r2', 'explained_variance'), cv=10)
+    scores = cross_validate(ran_forest, X_test, y_test, scoring=('r2', 'explained_variance'), cv=10)
     # fitting model
     ran_forest.fit(X_train, y_train)
     # making predictions
@@ -33,13 +31,11 @@ def randomForestEvaluation(df):
 def linearRegressionAlg(df):
     X_train, X_test, y_train, y_test = train_test_split(df.loc[:, df.columns != 'price'], df['price'], test_size=0.2,
                                                         train_size=0.8, random_state=np.random.seed(0))
-    X_trainn = df.loc[:, df.columns != 'price']
-    y_trainn = df['price']
     # Regression Model based Multiple Linear Regression Algorithm
     lm = linear_model.LinearRegression()
-    scores = cross_validate(lm, X_trainn, y_trainn, scoring=('r2', 'explained_variance'), cv=10)
     # fitting model
     lm.fit(X_train, y_train)
+    scores = cross_validate(lm, X_test, y_test, scoring=('r2', 'explained_variance'), cv=10)
     # making predictions
     predict_y = lm.predict(X_test)
     mse = mean_squared_error(y_test, predict_y)
@@ -47,6 +43,25 @@ def linearRegressionAlg(df):
     print(mse)
     print(np.mean(scores['test_r2']))
     print(np.mean(scores['test_explained_variance']))
+
+
+def KNNEvaluation(df):
+    X_train, X_test, y_train, y_test = train_test_split(df.loc[:, df.columns != 'price'], df['price'], test_size=0.2,
+                                                        train_size=0.8, random_state=np.random.seed(0))
+    X_trainn = df.loc[:, df.columns != 'price']
+    y_trainn = df['price']
+    knn = KNeighborsRegressor(n_neighbors=5)
+    scores = cross_validate(knn, X_trainn, y_trainn, scoring=('r2', 'explained_variance'), cv=10)
+    knn.fit(X_train, y_train)
+    predict_y = knn.predict(X_test)
+    print("results for 5-NN")
+    mse = mean_squared_error(y_test, predict_y)
+    df_prediction = pd.DataFrame({'real price': y_test, 'predicted price': predict_y})
+    print(df_prediction[abs(df_prediction['real price'] - df_prediction['predicted price']) > 3000])
+    print(mse)
+    print(np.mean(scores['test_r2']))
+    print(np.mean(scores['test_explained_variance']))
+
 
 
 def kNearestNeighbours(df):

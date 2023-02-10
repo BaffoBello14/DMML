@@ -6,7 +6,7 @@ import joblib as jl
 def load_dataset():
     df = pd.read_csv(filedialog.askopenfilename(defaultextension='.csv', filetypes=[('CSV files', '*.csv')]))
     df['age'] = 2023 - df['year']
-    df = df[['manufacturer', 'cylinders', 'fuel', 'odometer', 'drive', 'type', 'long', 'age', 'price']]
+    df = df[['manufacturer', 'cylinders', 'fuel', 'odometer', 'transmission', 'drive', 'type', 'age', 'price']]
     #Mostrare a video nell'app(tranne price)
     print(df)
     # Deserializzazione della mappatura ordinal_label dal file
