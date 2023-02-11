@@ -1,6 +1,7 @@
 import pandas as pd
 import joblib as jl
-from sklearn.metrics import mean_squared_error
+import numpy as np
+from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 from sklearn.ensemble import AdaBoostRegressor, GradientBoostingRegressor, RandomForestRegressor
 from sklearn.linear_model import Lasso, ElasticNet
 from sklearn.model_selection import KFold
@@ -9,6 +10,11 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.svm import SVR
 from xgboost import XGBRegressor
 
+
+def mean_percentage_error(y_true, y_pred):
+    return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
+
+
 def crossValRandomForest(df):
     X = df.drop("price", axis=1)
     y = df["price"]
@@ -16,11 +22,12 @@ def crossValRandomForest(df):
     best_score = 0
 
     # Inizializza il classificatore Random Forest
-    model = RandomForestRegressor(n_jobs=10, n_estimators=500, max_features=4)
+    model = RandomForestRegressor(n_jobs=10, n_estimators=500, max_features=5)
 
     # Inizializza la cross-validation k-fold con 10 divisioni
     kfold = KFold(n_splits=10, random_state=42, shuffle=True)
     print('Results for RF')
+    mean = 0
     # Inizia la cross-validation
     for train_index, test_index in kfold.split(X):
         X_train, X_test = X.iloc[train_index], X.iloc[test_index]
@@ -32,15 +39,21 @@ def crossValRandomForest(df):
         # Valuta le prestazioni sul set di test
         score = model.score(X_test, y_test)
         predict_y = model.predict(X_test)
+        mpe = mean_percentage_error(y_test,predict_y)
+        print("Mean percentage error: ", mpe)
         mse = mean_squared_error(y_test, predict_y)
+        mae = mean_absolute_error(y_test, predict_y)
+        print("Mean Absolute Error:", mae)
         print("Mean square error:", mse)
         print("Accuracy:", score)
+        mean = mean + score
 
         # Salvataggio del modello
         if score > best_score:
             best_score = score
             jl.dump(model, '../Models/random_forest.pkl')
-
+    mean = mean/10
+    print(f"Mean score: {mean}")
 
 def crossValLassoAlg(df):
     X = df.loc[:, df.columns != 'price']
@@ -65,6 +78,8 @@ def crossValLassoAlg(df):
         predict_y = model.predict(X_test)
         score = model.score(X_test, y_test)
         mse = mean_squared_error(y_test, predict_y)
+        mae = mean_absolute_error(y_test, predict_y)
+        print("Mean Absolute Error:", mae)
         print("Mean square error:", mse)
         print("Accuracy:", score)
 
@@ -97,6 +112,8 @@ def crossValAdaBoostRegressor(df):
         predict_y = model.predict(X_test)
         score = model.score(X_test, y_test)
         mse = mean_squared_error(y_test, predict_y)
+        mae = mean_absolute_error(y_test, predict_y)
+        print("Mean Absolute Error:", mae)
         print("Mean square error:", mse)
         print("Accuracy:", score)
 
@@ -129,6 +146,8 @@ def crossValElasticNet(df):
         predict_y = model.predict(X_test)
         score = model.score(X_test, y_test)
         mse = mean_squared_error(y_test, predict_y)
+        mae = mean_absolute_error(y_test, predict_y)
+        print("Mean Absolute Error:", mae)
         print("Mean square error:", mse)
         print("Accuracy:", score)
 
@@ -162,6 +181,8 @@ def crossValKNN(df):
         score = model.score(X_test, y_test)
         predict_y = model.predict(X_test)
         mse = mean_squared_error(y_test, predict_y)
+        mae = mean_absolute_error(y_test, predict_y)
+        print("Mean Absolute Error:", mae)
         print("Mean square error:", mse)
         print("Accuracy:", score)
 
@@ -196,6 +217,8 @@ def crossValM5Rules(df):
         score = model.score(X_test, y_test)
         predict_y = model.predict(X_test)
         mse = mean_squared_error(y_test, predict_y)
+        mae = mean_absolute_error(y_test, predict_y)
+        print("Mean Absolute Error:", mae)
         print("Mean square error:", mse)
         print("Accuracy:", score)
 
@@ -229,6 +252,8 @@ def crossValGBR(df):
         score = model.score(X_test, y_test)
         predict_y = model.predict(X_test)
         mse = mean_squared_error(y_test, predict_y)
+        mae = mean_absolute_error(y_test, predict_y)
+        print("Mean Absolute Error:", mae)
         print("Mean square error:", mse)
         print("Accuracy:", score)
 
@@ -262,6 +287,8 @@ def crossValSVR(df):
         score = model.score(X_test, y_test)
         predict_y = model.predict(X_test)
         mse = mean_squared_error(y_test, predict_y)
+        mae = mean_absolute_error(y_test, predict_y)
+        print("Mean Absolute Error:", mae)
         print("Mean square error:", mse)
         print("Accuracy:", score)
 
@@ -295,6 +322,8 @@ def crossValXGBR(df):
         score = model.score(X_test, y_test)
         predict_y = model.predict(X_test)
         mse = mean_squared_error(y_test, predict_y)
+        mae = mean_absolute_error(y_test, predict_y)
+        print("Mean Absolute Error:", mae)
         print("Mean square error:", mse)
         print("Accuracy:", score)
 
@@ -306,11 +335,12 @@ def crossValXGBR(df):
 
 df = pd.read_csv("../Dataset/vehicles_preprocessed.csv")
 df.drop('Unnamed: 0', axis=1, inplace=True)
-#crossVAlAdaBoostRegressor(df)  #0.56
-#crossVAlElasticNet(df)         #0.6
-#crossVAlLassoAlg(df)           #0.6
-#crossVAlM5Rules(df)            #0.785
-#crossVAlKNN(df)                #0.247
-crossValRandomForest(df)       #0.89
+print(np.mean(df['price']))
+#crossValAdaBoostRegressor(df)  #0.56
+#crossValElasticNet(df)         #0.6
+#crossValLassoAlg(df)           #0.6
+#crossValM5Rules(df)            #0.785
+#crossValKNN(df)                #0.247
+#crossValRandomForest(df)       #0.89
 #crossValGBR(df)                #0.81
 #crossValXGBR(df)                #0.85

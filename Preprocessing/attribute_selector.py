@@ -107,43 +107,6 @@ def categorical_graph(df):
         plt.show()
 
 
-def chi2_test_on_categorical_features():
-    # this function performs chi2 test on categorical features to find
-    # their mutual correlation
-    # loading categorical data
-    dfc = pd.read_csv('../Dataset/categorical_data.csv', na_filter=False)
-    column_names = dfc.columns
-    # Assigning column names to row index
-    chisqmatrix = pd.DataFrame(dfc, columns=column_names, index=column_names)
-
-    for icol in column_names:  # Outer loop
-        for jcol in column_names:  # inner loop
-            if icol == 'Unnamed: 0' or jcol == 'Unnamed: 0' or jcol == 'manufacturer' or icol == 'manufacturer':
-                continue
-            # converting to cross tab as for chi2 test we have to first covert variables into contigency table
-            mycrosstab = pd.crosstab(dfc[icol], dfc[jcol])
-            # Getting p-value and other usefull information
-            stat, p, dof, expected = st.chi2_contingency(mycrosstab)
-
-            # Rounding very small p-values to zero
-            chisqmatrix.loc[icol, jcol] = round(p, 5)
-
-            # Expected frequencies should be at
-            # least 5 for the majority (80%) of the cells.
-            # Here we are checking expected frequency of each group
-            cntexpected = expected[expected < 5].size
-
-            # Getting percentage
-            perexpected = ((expected.size - cntexpected) / expected.size) * 100
-            if perexpected < 20:
-                chisqmatrix.loc[icol, jcol] = 2  # Assigning 2
-
-            if icol == jcol:
-                chisqmatrix.loc[icol, jcol] = 0.00
-
-    # Saving chi2 results
-    chisqmatrix.to_csv('../Dataset/chi2_matrix.csv')
-
 
 def outlier_deleter(df):
     lower_bound = np.quantile(df['price'], q=0.10)
@@ -162,23 +125,6 @@ def outlier_deleter(df):
     print(df.info)
     return df
 
-'''
-def outlier_deleter(df):
-    data = pd.DataFrame({'price': df['price'], 'odometer': df['odometer'], 'age': df['age']})
-
-    # istanzia il modello
-    envelope = EllipticEnvelope(contamination=0.3)
-
-    # addestra il modello
-    envelope.fit(data)
-
-    # utilizzare il modello per classificare i dati come inlier o outlier
-    outlier_scores = envelope.decision_function(data)
-
-    inlier_indexes = data[outlier_scores > -1].index
-    df = df.loc[inlier_indexes]
-    return df
-'''
 
 
 df_numerical = pd.read_csv('../Dataset/numerical_data.csv')

@@ -17,7 +17,6 @@ def import_dataset():
 
     df3 = pd.read_csv("../Dataset/vehicles8.csv")
     df3 = df3[df3['price'] > 20000]
-    #df3 = df3[(df3['price'].between(12500, 100000))]
     df3.drop('Unnamed: 0', axis=1, inplace=True)
     df3['age'] = 2020 - df3['year']
 
