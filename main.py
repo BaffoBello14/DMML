@@ -2,6 +2,7 @@ from tkinter import filedialog
 import numpy as np
 import pandas as pd
 import joblib as jl
+import time
 
 def load_dataset():
     df = pd.read_csv(filedialog.askopenfilename(defaultextension='.csv', filetypes=[('CSV files', '*.csv')]))
@@ -27,10 +28,13 @@ def predict_price(df, model):
 df = load_dataset()
 df_adjusted = df
 price_time = np.zeros(5)
-model = jl.load(filedialog.askopenfilename(defaultextension='.pkl', filetypes=[('PKL files', '*.pkl')]))
+start_time = time.time()
+#model = jl.load(filedialog.askopenfilename(defaultextension='.pkl', filetypes=[('PKL files', '*.pkl')]))
+model = jl.load('Models/m5_rules.pkl')
 for i in range(0, 5):
     df_adjusted['age'] = df['age'] + i
     df_adjusted['odometer'] = (df['odometer']/df['age'])*(df['age'] + i)
     price = predict_price(df_adjusted, model)
     price_time[i] = price
+    print("--- %s seconds ---" % (time.time() - start_time))
 print(price_time)
