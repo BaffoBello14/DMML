@@ -44,11 +44,12 @@ class Application(tk.Frame):
         file_path = filedialog.askopenfilename(defaultextension=".csv", filetypes=[("CSV", "*.csv")])
         if not file_path:
             return
-
         for widget in root.winfo_children():
-            if widget not in [self.load_button, self.rf_button, self.m5_button]:
-                widget.destroy()
-
+            widget.destroy()
+        super().__init__(root)
+        self.master = root
+        self.pack()
+        self.create_widgets()
         # Load the CSV file into a pandas DataFrame
         self.data = pd.read_csv(file_path)
         self.data['age'] = 2023 - self.data['year']
@@ -70,28 +71,15 @@ class Application(tk.Frame):
         table.pack()
 
 
-        '''# Display the DataFrame in a table
-        for j, col in enumerate(self.data_x.columns):
-            label = tk.Label(self, text=col, font=("Helvetica", 14, "bold"), padx=5, pady=5)
-            label.grid(row=3, column=j)
-        for i, row in enumerate(self.data_x.values):
-            for j, col in enumerate(row):
-                label = tk.Label(self, text=col, padx=5, pady=5)
-                label.grid(row=i + 4, column=j)
-            for i in range(3, self.data_x.shape[0] + 4):
-                tk.Frame(self, height=2, bd=1, relief="sunken").grid(row=i, column=0, columnspan=self.data_x.shape[1], sticky="ew")
-            for j in range(self.data_x.shape[1]):
-                tk.Frame(self, width=2, bd=1, relief="sunken").grid(row=3, rowspan=self.data_x.shape[0]+1, column=j, sticky="ns")'''
-
     def run_random_forest(self):
         X = self.data.drop('price', axis=1)
         y = self.data['price']
-        prices = []
+        prices = np.zeros(5)
         for i in range(0, 5):
             X['age'] = self.data['age'] + i
             X['odometer'] = (self.data['odometer'] / self.data['age']) * (i + self.data['age'])
             predict_y = random_forest.predict(X)
-            prices.append(predict_y)
+            prices[i]=predict_y
         fig = plt.figure()
         plt.plot(range(int(self.data.iloc[0]['age']), int(self.data.iloc[0]['age']) + 5), prices)
         plt.title("Random Forest Prediction")
@@ -99,21 +87,21 @@ class Application(tk.Frame):
         canvas.draw()
         canvas.get_tk_widget().pack(side='left')
         ext_price = prices[0]
-        np.round(ext_price, 2)
-        #label = tk.Label(self, text="Estimated actual price: " + ext_price + '$', font=("Helvetica", 14, "bold"), padx=5, pady=5)
-        #label.pack(side='left')
+        formatted_price = "${:.2f}".format(ext_price)
+        label = tk.Label(self, text="Estimated actual price: " + formatted_price, font=("Helvetica", 9, "bold"), padx=5, pady=5)
+        label.place(relx=0.25, rely=1.0, anchor='s')
 
 
 
     def run_m5_rules(self):
         X = self.data.drop('price', axis=1)
         y = self.data['price']
-        prices = []
+        prices = np.zeros(5)
         for i in range(0, 5):
             X['age'] = self.data['age'] + i
             X['odometer'] = (self.data['odometer'] / self.data['age']) * (i + self.data['age'])
             predict_y = m5_rules.predict(X)
-            prices.append(predict_y)
+            prices[i] = predict_y
         fig = plt.figure()
         plt.plot(range(int(self.data.iloc[0]['age']), int(self.data.iloc[0]['age']) + 5), prices)
         plt.title("M5Rules Prediction")
@@ -121,10 +109,9 @@ class Application(tk.Frame):
         canvas.draw()
         canvas.get_tk_widget().pack(side='right')
         ext_price = prices[0]
-        np.round(ext_price, 2)
-        #label = tk.Label(self, text="Estimated actual price: " + ext_price + '$', font=("Helvetica", 14, "bold"), padx=5, pady=5)
-        #label.pack(side='right')
-
+        formatted_price = "${:.2f}".format(ext_price)
+        label = tk.Label(self, text="Estimated actual price: " + formatted_price, font=("Helvetica", 9, "bold"), padx=5, pady=5)
+        label.place(relx=0.75, rely=1.0, anchor='s')
 
 
 root = tk.Tk()
