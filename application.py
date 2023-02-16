@@ -5,9 +5,8 @@ import pandas as pd
 import numpy as np
 import joblib as jl
 from matplotlib import pyplot as plt
-
-# Load
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
 
 random_forest = jl.load("Models/random_forest.pkl")
 m5_rules = jl.load("Models/m5_rules.pkl")

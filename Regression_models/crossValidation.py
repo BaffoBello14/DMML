@@ -1,14 +1,10 @@
-import pandas as pd
-import joblib as jl
 import numpy as np
-from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
-from sklearn.ensemble import AdaBoostRegressor, GradientBoostingRegressor, RandomForestRegressor
-from sklearn.linear_model import Lasso, ElasticNet
+import pandas as pd
+from sklearn.ensemble import AdaBoostRegressor, RandomForestRegressor
+from sklearn.metrics import mean_squared_error, mean_absolute_error
 from sklearn.model_selection import KFold
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.tree import DecisionTreeRegressor
-from sklearn.svm import SVR
-from xgboost import XGBRegressor
 
 
 def crossValRandomForest(df):
@@ -171,12 +167,8 @@ def crossValM5Rules(df):
 df = pd.read_csv("../Dataset/vehicles_preprocessed.csv")
 df.drop('Unnamed: 0', axis=1, inplace=True)
 print(np.mean(df['price']))
-crossValAdaBoostRegressor(df)  #0.56
-#crossValElasticNet(df)         #0.6
-#crossValLassoAlg(df)           #0.6
-crossValM5Rules(df)            #0.785
-crossValKNN(df)                #0.247
-crossValRandomForest(df)       #0.89
-#crossValGBR(df)                #0.81
-#crossValXGBR(df)                #0.85
+crossValAdaBoostRegressor(df)
+crossValM5Rules(df)
+crossValKNN(df)
+crossValRandomForest(df)
 
