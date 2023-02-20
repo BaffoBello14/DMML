@@ -26,7 +26,7 @@ def import_dataset():
 
     return df
 
-# url, region_url, vin, size, county
+
 
 
 def delete_useless_columns(df):
